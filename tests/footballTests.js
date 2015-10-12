@@ -23,7 +23,9 @@ describe("Ticket booth", function() {
   });
 
   it("should have 500 seats in A, 500 in B", function() {
-    // TODO enter your test code here.
+    var sectionsOfSeats = Object.keys(ticketBooth);
+    expect(ticketBooth.a.available).toEqual(500);
+    expect(ticketBooth.b.available).toEqual(500);
   });
 
   it("should have fewer seats available after selling one", function() {
@@ -31,7 +33,6 @@ describe("Ticket booth", function() {
     expect(ticketBooth.a.filled).toEqual(1);
     expect(ticketBooth.a.available).toEqual(499);
   });
-
 
 });
 
@@ -87,7 +88,12 @@ describe("Ticket orders (depending on constraints)", function() {
   });
 
   it("should be half price for Yale College students", function() {
-    // TODO enter your test code here
+    var sectionA = placeTicketOrder(1, 'a', 'yc', ticketBooth);
+    var sectionB = placeTicketOrder(1, 'b', 'yc', ticketBooth);
+    expect(sectionA.fulfilled).toBe(true);
+    expect(sectionB.fulfilled).toBe(true);
+    expect(sectionA.totalPrice).toBe(25);
+    expect(sectionB.totalPrice).toBe(15);
   });
 });
 
@@ -102,11 +108,21 @@ describe("Ticket orders for reservations (STRETCH)", function () {
 
   // STRETCH Goals
   it("should have a block of 100 half-price tickets reserved for SOM students only in B", function() {
-    // TODO (strech) enter your test code here
+    var sectionsOfSeats = Object.keys(ticketBooth);
+    expect(sectionsOfSeats).toEqual(['a', 'b']);
+    expect(ticketBooth.a.reserved.som).toEqual(0);
+    expect(ticketBooth.b.reserved.som).toEqual(100);
   });
 
   it("should properly price purchases fullfilled partially from reserved seats", function() {
-    // TODO (stretch) enter your test code here
+    var sectionsOfSeats = Object.keys(ticketBooth);
+    var orderResults = placeTicketOrder(101, 'b', 'som', ticketBooth);
+    expect(ticketBooth.a.reserved.som).toEqual(0);
+    expect(ticketBooth.b.reserved.som).toEqual(0);
+    expect(ticketBooth.b.available).toEqual(399);
+    expect(ticketBooth.b.filled).toEqual(101);
+    expect(orderResults.fulfilled).toBe(true);
+    expect(orderResults.totalPrice).toBe(1530);
   });
 
   it("should not let non-SOM students purchase reserved seats", function() {
